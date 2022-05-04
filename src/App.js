@@ -58,6 +58,7 @@ const App = () =>{
   const [descError,setDescError]= useState('')
   const [statusError,setStatusError]= useState('')
   const [csvData,setCsvData]= useState(false)
+  const [fileError,setError] = useState(false)
 
   useComponentDidMount(() => {
     getData()
@@ -98,10 +99,10 @@ const App = () =>{
     axios.post(`${baseUrl}uploadAgenda`,form).then((res)=>{
       console.log('res',res)
     }).catch((error)=>{
-      console.log('error',error)
+      setError(error.response.data.error)
     })
   }
-
+  console.log('fileError',fileError)
   const handleCancel = () =>{
     setIsModalVisible(false)
   }
@@ -130,7 +131,7 @@ const App = () =>{
     if(status === ''){
       setStatusError('Please Enter The Value!')
     }
-    
+
     let csv = [
       ['Title','Description','Status','Date']
     ]
@@ -161,6 +162,11 @@ const App = () =>{
       <div>
         <Table columns={columns} dataSource={list} />
       </div>  
+      <div>
+        {fileError ?fileError.map((value,key)=>(
+          <div style={{color:'red'}}>{value}</div>
+        )):''}
+      </div>
       <Modal
         visible={isModalVisible} 
         onCancel={handleCancel}
